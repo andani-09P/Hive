@@ -1,0 +1,85 @@
+create table loc(id int,name string) partition by (place string) row format deliminated fields terminated by ','
+load data local inpath '/home/andani/Desktop/par.csv' into table loc PARTITION (place = 'bij'); 
+
+CREATE TABLE loc(id int,name string,sal int)
+ PARTITIONED BY (place string)
+ ROW FORMAT DELIMITED 
+ FIELDS TERMINATED BY ',';
+
+
+
+
+##################static partation##############
+CREATE TABLE loc2(firstname STRING,lastname  STRING,address   STRING,city STRING,post      STRING,phone1    STRING,phone2    STRING,email     STRING,web       STRING)PARTITIONED BY (country STRING, state STRING)
+ROW FORMAT DELIMITED 
+ FIELDS TERMINATED BY ','
+LINES TERMINATED BY '/n';
+
+
+LOAD DATA LOCAL INPATH '/home/andani/Desktop/loc2.csv'
+      INTO TABLE par1
+      PARTITION (country = 'US', state = 'CA');
+
+
+###########dynamic partation####################
+ 
+set hive.exec.dynamic.partition=true;
+set hive.exec.dynamic.partition.mode=nonstrict;
+set hive.exec.max.dynamic.partitions=1000;
+set hive.exec.max.dynamic.partitions.pernode=1000;
+
+INSERT INTO TABLE partitioned_userPARTITION (country, state)
+        SELECT  firstname ,lastname  ,address   ,
+      city      ,post      ,phone1    ,phone2    ,email     ,web       ,country   ,
+      state     FROM temp_user;
+
+
+
+
+
+create table new1 like loc8
+INSERT INTO TABLE new1 PARTITION (country, state)
+        SELECT  firstname ,lastname  ,address   ,city      ,post      ,phone1    ,phone2    ,email     ,web       ,country   ,state     FROM temp_user1;
+
+
+
+
+
+set hive.exec.dynamic.partition=true;
+set hive.exec.dynamic.partition.mode=nonstrict;
+set hive.exec.max.dynamic.partitions.pernode=1000;
+ 
+DROP TABLE IF EXISTS partitioned_user;
+ 
+CREATE TABLE temp_user1(firstname STRING,lastname  STRING,address   STRING,country   STRING,city      STRING,state     STRING,post      STRING,phone1    STRING,phone2    STRING,email     STRING,web       STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' STORED AS TEXTFILE;
+ 
+LOAD DATA LOCAL INPATH '/home/andani/Desktop/par.csv' INTO TABLE temp_user;
+ 
+SELECT firstname, phone1, city FROM temp_user WHERE country='US' AND state='CA' ORDER BY city LIMIT 5;
+ 
+CREATE TABLE loc10(firstname STRING,lastname  STRING,address   STRING,city STRING,post      STRING,phone1    STRING,phone2    STRING,email     STRING,web       STRING)PARTITIONED BY (country STRING, state STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' STORED AS TEXTFILE;
+ 
+INSERT INTO TABLE loc5 PARTITION (country, state)
+        SELECT  firstname ,lastname  ,address   ,city      ,post      ,phone1    ,phone2    ,email     ,web       ,country   ,state     FROM temp_user1;
+
+
+INSERT INTO TABLE loc9 PARTITION (country, state)
+        SELECT * FROM temp_user1;
+
+
+
+
+
+drop table loc8;
+
+CREATE EXTERNAL TABLE loc8(firstname STRING,lastname  STRING,address   STRING,city STRING,post      STRING,phone1    STRING,phone2    STRING,email     STRING,web       STRING)PARTITIONED BY (country STRING, state STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' STORED AS TEXTFILE
+LOCATION '/home/andani/loc/';
+
+
+
+
+
+
+
