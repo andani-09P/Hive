@@ -1,0 +1,213 @@
+create external table xml1( xmldata string) LOCATION '/xml1/AdvancedMicroDevices_EBSCO1.xml';
+
+
+
+
+cat /home/andani/Downloads/AdvancedMicroDevices_EBSCO1.xml | tr -d '&' | tr '\n' ' ' | tr '\r' ' ' | sed 's|</employee>|</employee>\n|g' | grep -v '^\s*$' > /home/andani/Downloads/ADN.xml
+
+
+
+
+
+
+
+
+
+
+CREATE [EXTERNAL] TABLE <table_name> (<column_specifications>)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+["xml.processor.class"="<xml_processor_class_name>",]
+"column.xpath.<column_name>"="<xpath_query>",
+... 
+["xml.map.specification.<xml_element_name>"="<map_specification>"
+...
+]
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+[LOCATION "<data_location>"]
+TBLPROPERTIES (
+"xmlinput.start"="<start_tag ",
+"xmlinput.end"="<end_tag>"
+);
+#######################################################
+CREATE TABLE xml_bank(recordID BIGINT, pdfLink String,plink String,header map<string string>,abody map<string string>)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.recordID"="/SearchResults/records/rec/@recordID",
+"column.xpath.income"="/record/income/text()",
+"column.xpath.demographics"="/record/demographics/*",
+"column.xpath.financial"="/record/financial/*"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<record customer",
+"xmlinput.end"="</record>"
+);
+
+select customer, income demographics, financial from xml_bank limit 1;
+
+
+
+
+
+
+
+drop table if exists xmml1;
+CREATE TABLE xmml1(Hits string, recordID int, pdfLink string, plink string,jinfo  map<string,string>)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.Hits"="/searchResponse/Hits/text()",
+"column.xpath.recordID"="/rec/@recordID",
+"column.xpath.pdfLink"="/rec/pdfLink/text()",
+"column.xpath.plink"="/rec/plink/text()",
+"column.xpath.jinfo"="/rec/header/controlInfo/jinfo/*"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<rec recordID",
+"xmlinput.end"="</rec>"
+);
+
+
+
+only records
+
+drop table if exists xmml1;
+CREATE TABLE xmml1(recordID int, pdfLink string, plink string,jinfo  map<string,string>)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.recordID"="/rec/@recordID",
+"column.xpath.pdfLink"="/rec/pdfLink/text()",
+"column.xpath.plink"="/rec/plink/text()",
+"column.xpath.jinfo"="/rec/header/controlInfo/jinfo/*"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<rec recordID",
+"xmlinput.end"="</rec>"
+);
+
+
+
+drop table if exists xmml2;
+CREATE TABLE xmml2(recordID int, pdfLink string, plink string,jinfo  map<string,string>, pubinfo map<string,string>, artinfo map<string,string>)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.recordID"="/rec/@recordID",
+"column.xpath.pdfLink"="/rec/pdfLink/text()",
+"column.xpath.plink"="/rec/plink/text()",
+"column.xpath.jinfo"="/rec/header/controlInfo/jinfo/*",
+"column.xpath.pubinfo"="/rec/header/controlInfo/pubinfo/*",
+"column.xpath.artinfo"="/rec/header/controlInfo/artinfo/*"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<rec recordID",
+"xmlinput.end"="</rec>"
+);
+
+
+
+
+
+
+
+
+
+drop table if exists xmml3;
+CREATE TABLE xmml3(recordID int, pdfLink string, plink string,jinfo  map<string,string>, pubinfo map<string,string>, 
+artinfo array < map<map<string,string>,string> > )
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.recordID"="/rec/@recordID",
+"column.xpath.pdfLink"="/rec/pdfLink/text()",
+"column.xpath.plink"="/rec/plink/text()",
+"column.xpath.jinfo"="/rec/header/controlInfo/jinfo/*",
+"column.xpath.pubinfo"="/rec/header/controlInfo/pubinfo/*",
+"column.xpath.artinfo"="/rec/header/controlInfo/artinfo/*"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<rec recordID",
+"xmlinput.end"="</rec>"
+);
+
+
+
+
+
+
+
+drop table xml2;
+CREATE TABLE xml2(Hits string,recordID int, pdfLink string, plink string,jinfo  map<string,string>)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.Hits"="/searchResponse/Hits/text()",
+"column.xpath.recordID"="/searchResponse/rec/@recordID",
+"column.xpath.pdfLink"="/searchResponse/SearchResults/records/rec/pdfLink/text()",
+"column.xpath.plink"="/searchResponse/SearchResults/records/rec/plink/text()",
+"column.xpath.jinfo"="/searchResponse/SearchResults/records/rec/header/controlInfo/jinfo/*"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<searchResponse",
+"xmlinput.end"="</searchResponse>"
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE external TABLE xml_bank1(recordID STRING, header map<STRING,STRING>)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.recordID"="/searchResponse/SearchResults/records/rec/@recordID",
+"column.xpath.header"="/searchResponse/SearchResults/records/rec/header/*")
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+LOCATION '/xml2'
+TBLPROPERTIES (
+"xmlinput.start"="<searchResponse as",
+"xmlinput.end"="</searchResponse>"
+);
