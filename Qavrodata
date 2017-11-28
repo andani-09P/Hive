@@ -1,0 +1,86 @@
+ java -jar ~/home/andani/Downloads/avro-tools-1.7.4.jar getschema twitter.avro > twitter.avsc
+
+ java -jar ~/home/andani/Downloads/avro-tools-1.7.4.jar getschema /home/andani/Desktop/home (2)/rohit/tweets/user/flume/tweets/FlumeData.1496548535338 > /home/andai/Documents/twitter.avsc
+
+
+
+CREATE EXTERNAL TABLE av5
+  PARTITIONED BY (market_index_codes string)
+  ROW FORMAT SERDE
+  'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+  STORED AS INPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.avro.A\vroContainerInputFormat'
+  OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+  TBLPROPERTIES (
+    'avro.schema.url'='file:///home/andani/avroschema1.avro');
+
+
+
+CREATE EXTERNAL TABLE av4
+  ROW FORMAT SERDE
+  'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+  STORED as INPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+  OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+location '/av/avro_data/'
+  TBLPROPERTIES (
+    'avro.schema.url'='file:///home/andani/avroschema.avro');
+    PARTITIONED BY (subject_codes string,region_codes string)
+ STORED AS SEQUENCEFILE;
+
+create table out2 like av4;
+
+ALTER TABLE out2 CHANGE publication_date year;
+
+insert overwrite table out2 
+select 
+a.an,  
+a.snippet,                            
+a.body,
+a.art,              a.action,a.credit,a.byline,a.document_type,a.language_code,a.title,a.copyright,a.dateline,a.source_code,a.modification_date,a.company_codes,a.publisher_name,a.region_of_origin,a.word_count,a.subject_codes,a.region_codes,a.industry_codes,a.person_codes,a.currency_codes,a.market_index_codes,a.publication_date, year(FROM_UNIXTIME(CAST(publication_date/1000 as bigint), 'yyyy-MM-dd')) from av4 as a;
+
+
+SELECT CAST('00321' String) FROM av4;
+
+
+ALTER TABLE av3
+ADD PARTITION (year=’2015’)
+location '/part2012';
+
+
+CREATE TABLE part
+ROW FORMAT SERDE
+  'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+  STORED as INPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+  OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+location '/av/avro_data/'
+  TBLPROPERTIES (
+    'avro.schema.url'='file:///home/andani/avroschema.avro'); 
+ PARTITIONED BY(dt STRING, country STRING) 
+ STORED AS SEQUENCEFILE;
+
+
+
+
+
+create external table pp(col1 string, col2 string) partitioned by (publication-date string) location '/2012';
+
+alter table av4 add partition(year ='2012') location '/2012';
+
+
+
+select publication_date, year(FROM_UNIXTIME(CAST(publication_date/1000 as bigint), 'yyyy-MM-dd')) from av4;
+
+
+
+
+
+
+
+
+
+
