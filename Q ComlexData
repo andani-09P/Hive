@@ -1,0 +1,172 @@
+complex qu
+
+arrays: ARRAY<data_type>
+maps: MAP<primitive_type, data_type>
+structs: STRUCT<col_name : data_type [COMMENT col_comment], …>
+    
+
+
+
+
+
+
+1.array[values]
+ create table Temp1(date1 string,city string,MyTemp array<double>) row format delimited fields terminated by ' ' collection items terminated by ','
+
+2/3/2015 kar 1,2.2,3,4
+2/3/2015 mah 1,2,2,2,2
+2/3/2015 puj 3,3,3,3,3
+2/3/2015 up 4,4,4,4
+2/3/2015 up 9,495,54
+
+select date1,MyTemp[1] from Temp1;
+
+select date1,MyTemp[2] from Temp1;
+
+
+2.map{[key:value]}
+
+
+ create table Temp1(date1 string,city string,MyTemp map<string,int>) row format delimited fields terminated by ' ' collection items terminated by ',' map keys terminated by '+'
+
+2/3/3 andy eng:3,hindi:1,kan:2
+1/2/32 pooja eng:2,hindi:2,sci:3
+1/2/32 abi eng:2,hindi:2,sci:3
+1/2/32 anu eng:6,hindi:7,sci:2
+1/2/32 mukesh eng:4,hindi:8,sci:6
+1/2/32 pooja eng:1,hindi:2,sci:5
+
+select totai[andani] from temp1 where city="BJP"
+
+
+create table MySchools(schooltype string,state string,gender string, total map<int,int>) row format delimited fields terminated by '\t' collection items terminated by ',' map keys terminated by ':'
+
+
+
+2/3/2015 kar ab+23.3,ab+29.3,akb+20.5
+2/3/2015 mah abo+23.3,abp+23.3,abl+20.5
+2/3/2015 puj abm+23.4,abj+21.3,abu+10.5
+2/3/2015 up abpom+23.2,apkpb+22.3,
+2/3/2015 up abkjh+23.1,ablkj+28.3,anjb+22.5,aosob+31.5
+
+
+
+3.struct{}
+
+Struct is a record type which encapsulates a set of named fields that can be any primitive data type. An element in STRUCT type can be accessed using the DOT (.) notation.
+
+NMIT andani,21,9.1
+Rv pooja,30,9
+kv anu,23,8
+
+
+
+create table sc(clg string,details struct<name:string,age:int,grade:double) row format delimited fields terminated by ' ' collection items
+terminated by ','
+
+
+
+
+
+
+
+
+
+
+
+
+
+array
+
+create table temp2(name string, results struct<id:int,status_value:string,job_status:string>) row format delimited fields terminated by ' '  collection items terminated by '+'
+
+
+ab 1+status+job
+ab 2+status+job
+ab 3+status+job
+bbb 4+pass+orc
+abi 5+fail+wip
+andy 6+pending+inf
+
+
+
+
+
+
+
+
+############bucketing###########################
+create table buk1(
+Street string,City string,Zip int,State string,Beds int,Baths int,Sq_feet int,flat_type string,Price int)
+row format delimited fields terminated by ',' tblproperties("skip.header.line.count"="1"); 
+load data local inpath '/home/andani/Downloads/real_state.csv' into table buk1;
+
+hive.enforce.bucketing = true;
+
+create table buk2(
+Street string,Zip int,State string,Beds int,Baths int,Sq_feet int,flat_type string,Price int)
+partitioned by (City string) clustered by (street) into 4  buckets
+row format delimited fields terminated by ',' tblproperties("skip.header.line.count"="1"); 
+
+insert into table buk2 partition (City) 
+select Street,Zip,State,Beds,Baths,Sq_feet,flat_type,Price,City from buk1
+
+
+create table buk3(
+Street string,City string,Zip int,State string,Beds int,Baths int,Sq_feet int,flat_type string,Price int) clustered by (street) into 4  buckets
+row format delimited fields terminated by ',' tblproperties("skip.header.line.count"="1"); 
+
+
+
+
+
+
+
+
+
+create table load_tweets(id BIGINT,text STRING) ROW FORMAT DELIMITED LINES TERMINATED BY '/n' SERDE 'com.cloudera.hive.serde.JSONSerDe';
+
+
+
+create table twt1 ROW FORMAT SERDE 'com.cloudera.hive.serde.JSONSerDe'
+TBLPROPERTIES (
+    'avro.schema.url'='file:///home/andani/Downloads/schema');
+; 
+
+ CREATE EXTERNAL table twt(  tweet STRING )
+ROW FORMAT SERDE 'com.cloudera.hive.serde.JSONSerDe'
+LOCATION '/home/andani/Downloads/FlumeData.1496916118383';
+
+
+	
+CREATE EXTERNAL TABLE TB1(id BIGINT,text String) ROW FORMAT SERDE 'com.cloudera.hive.serde.JSONSerDe' WITH SERDEPROPERTIES("id"="$.id","text"="$.text")
+
+
+
+
+select get_json_object(json_table.json, '$.id') as id, 
+       get_json_object(json_table.json, '$.text') as text
+from json_table;
+
+
+set hive.cli.print.header=true
+
+CREATE EXTERNAL TABLE IF NOT EXISTS twt2(id BIGINT,text String) ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES ("ignore.malformed.json" = "true")     
+LOCATION '/twt1';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
