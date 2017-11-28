@@ -1,0 +1,53 @@
+ADD external jars in(hive-common and hive exec)
+
+
+
+
+
+
+
+
+
+package hive_udf;
+
+import org.apache.hadoop.hive.ql.exec.UDF;
+
+
+public class simple_udf extends UDF {
+	double count=0;
+
+	public double evaluate(String input) {
+		//String out =new String();
+		if (input == null){
+			return (Double)null;
+		}
+		else if (input == "Virat"){
+			count++;
+			
+		}
+			
+		return count;
+	}
+
+
+
+
+package hive_udf;
+
+import org.apache.hadoop.hive.ql.exec.UDF;
+
+
+public class simple_udf extends UDF {
+
+
+	public String evaluate(String input) {
+		String out =new String();
+		if (input == null){
+			return null;
+		}
+		else {
+			out=input.replaceAll([!@@#$%^&*],"")count++;
+		}
+			
+		return out;
+	}
